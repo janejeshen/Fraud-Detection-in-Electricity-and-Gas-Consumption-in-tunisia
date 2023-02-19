@@ -31,7 +31,7 @@ def set_png_as_page_bg(png_file):
     st.markdown(page_bg_img, unsafe_allow_html=True)
     return
 
-set_png_as_page_bg('/home/jane/Documents/electricity/Fraud-Detection-in-Electricity-and-Gas-Consumption-in-tunisia/soroush-zargar-Nu-QDChzGEw-unsplash.jpg')
+set_png_as_page_bg('soroush-zargar-Nu-QDChzGEw-unsplash.jpg')
 
 # st.markdown(
 #     """
@@ -56,7 +56,7 @@ st.markdown('The Tunisian Company of Electricity and Gas, STEG, experienced larg
 st.write('##### ⚠️This is not the official Tunisian Company of Electricity and Gas app‼️')
 # Load your data
 
-data = pd.read_csv('/home/jane/Documents/electricity/Fraud-Detection-in-Electricity-and-Gas-Consumption-in-tunisia/data/agg_train.csv')
+data = pd.read_csv('data/agg_train.csv')
 
 # Identify categorical features
 cat_features = ['district', 'client_catg', 'region']
@@ -75,7 +75,7 @@ def load_model(path):
         fraud_model = pkl.load(f)
     return fraud_model
 
-fraud_model = load_model('/home/jane/Documents/electricity/Fraud-Detection-in-Electricity-and-Gas-Consumption-in-tunisia/model.pkl')
+fraud_model = load_model('model.pkl')
 
 #Dummy function for the model prediction
 def predict(district, client_catg, region, transactions_count, consommation_level_1_mean, consommation_level_2_mean, consommation_level_3_mean, consommation_level_4_mean):
