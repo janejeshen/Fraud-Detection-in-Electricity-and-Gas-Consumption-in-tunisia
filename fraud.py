@@ -55,7 +55,7 @@ numerical_features = ['transactions_count', 'consommation_level_1_mean', 'consom
 X = pd.concat([pd.DataFrame(encoded.toarray()), data[numerical_features]], axis=1)
 
 # Load the saved model using the load_model() function
-with open('model.pkl', 'rb') as f:
+with open('fraud.pkl', 'rb') as f:
     fraud_model = pkl.load(f)
 
 
