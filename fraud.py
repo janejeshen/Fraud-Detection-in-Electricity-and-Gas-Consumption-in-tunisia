@@ -27,7 +27,7 @@ def set_png_as_page_bg(png_file):
     st.markdown(page_bg_img, unsafe_allow_html=True)
     return
 
-set_png_as_page_bg('/home/jane/Documents/Fraud detection/soroush-zargar-Nu-QDChzGEw-unsplash.jpg')
+set_png_as_page_bg('/home/jane/Documents/electricity/Fraud-Detection-in-Electricity-and-Gas-Consumption-in-tunisia/soroush-zargar-Nu-QDChzGEw-unsplash.jpg')
 
 # st.markdown(
 #     """
@@ -46,15 +46,12 @@ set_png_as_page_bg('/home/jane/Documents/Fraud detection/soroush-zargar-Nu-QDChz
 
 
 
-
-
-
 st.header('Detecting Electricity Fraud In Tunisia')
 
 st.markdown('The Tunisian Company of Electricity and Gas, STEG, experienced large losses as a result of consumer fraud. My app analyzes usage patterns and flags suspect accounts using data modeling to find potential fraudsters in order to stop further losses.')
 st.write('##### ⚠️This is not the official Tunisian Company of Electricity and Gas app‼️')
 # Load your data
-data = pd.read_csv('/home/jane/Documents/Fraud detection/agg_train.csv')
+data = pd.read_csv('/home/jane/Documents/electricity/Fraud-Detection-in-Electricity-and-Gas-Consumption-in-tunisia/data/agg_train.csv')
 
 # Identify categorical features
 cat_features = ['district', 'client_catg', 'region']
@@ -68,13 +65,13 @@ numerical_features = ['transactions_count', 'consommation_level_1_mean', 'consom
 X = pd.concat([pd.DataFrame(encoded.toarray()), data[numerical_features]], axis=1)
 
 # Load the saved model using the load_model() function
-@st.cache(allow_output_mutation=True)
+# @st.cache(allow_output_mutation=True)
 def load_model(path):
     with open(path, 'rb') as f:
         fraud_model = pkl.load(f)
     return fraud_model
 
-# fraud_model = load_model('my_model.pkl')
+fraud_model = load_model('/home/jane/Documents/electricity/Fraud-Detection-in-Electricity-and-Gas-Consumption-in-tunisia/model.pkl')
 
 # Display the input form to collect user inputs
 district = st.selectbox('District', data['district'].unique())
@@ -90,35 +87,39 @@ consommation_level_4_mean = st.number_input('Consommation Level 4 Mean', value=0
 input_data = pd.DataFrame([[district, client_catg, region, transactions_count, consommation_level_1_mean, consommation_level_2_mean, consommation_level_3_mean, consommation_level_4_mean]], columns=['district', 'client_catg', 'region', 'transactions_count', 'consommation_level_1_mean', 'consommation_level_2_mean', 'consommation_level_3_mean', 'consommation_level_4_mean'])
 encoded_input = encoder.transform(input_data[cat_features])
 input_features = pd.concat([pd.DataFrame(encoded_input.toarray()), input_data[numerical_features]], axis=1)
-# prediction = fraud_model.predict(input_features)
+prediction = fraud_model.predict(input_features)
 
-# Display the prediction to the user
-# if prediction[0] == 0:
-#     st.write('Prediction: Not fraud')
-# else:
-#     st.write('Prediction: Fraud')
+# button_style = 'background-color: green; color: white; font-weight: bold;'
+if st.button("Predict", key='predict_button', help='Click here to make a prediction',use_container_width=True):
+    with st.spinner("Making prediction..."):
+        # Use the trained model to predict the outcome and display it to the user
+        if prediction[0] == 0:
+           st.write('**Prediction:** The customer is not engaging in fraudulent activities.')
+        else:
+            st.write('**Prediction:** The customer is engaging in fraudulent activities.')
+    st.success("Prediction completed!")
 
 
-st.markdown('<div class="contact-container">', unsafe_allow_html=True)
-with st.container():
-    st.write("### Contact Info")
-    st.write("Email: janenjuguna550@gmail.com")
-    st.write("Phone: +254114180510")
-    st.write("Address: Nairobi,Kenya")
-    st.write("Github: https://github.com/janejeshen")
+# st.markdown('<div class="contact-container">', unsafe_allow_html=True)
 
-    st.markdown(
-        """
-        <style>
-        .contact-container {
-            background-color: #d1c1aa
-;
-            padding: 20px;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
+# with st.container():
+#     st.write("### Contact Info")
+#     st.write("Email: janenjuguna550@gmail.com")
+#     st.write("Phone: +254114180510")
+#     st.write("Address: Nairobi,Kenya")
+#     st.write("Github: https://github.com/janejeshen")
+
+#     st.markdown(
+#         """
+#         <style>
+#         .contact-container {
+#             background-color: #d1c1aa;
+#             padding: 20px;
+#         }
+#         </style>
+#         """,
+#         unsafe_allow_html=True,
+#     )
     
-    # Apply the CSS style to the container
-    st.markdown('<div class="contact-container">', unsafe_allow_html=True)
+# # Close the div tag
+# st.markdown('</div>', unsafe_allow_html=True)
