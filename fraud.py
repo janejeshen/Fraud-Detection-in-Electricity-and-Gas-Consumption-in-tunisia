@@ -33,21 +33,6 @@ def set_png_as_page_bg(png_file):
 
 set_png_as_page_bg('soroush-zargar-Nu-QDChzGEw-unsplash.jpg')
 
-# st.markdown(
-#     """
-#     <style>
-#     .big-font {
-#         font-size: 16px !important;
-#         font-family: sans-serif;
-#     }
-#     </style>
-#     """,
-#     unsafe_allow_html=True,
-# )
-
-# Use the CSS class to apply the font to a text element
-# st.markdown('<p class="big-font">⚠️This is not the official Tunisian Company of Electricity and Gas app</p>', unsafe_allow_html=True)
-
 
 
 st.header('Detecting Electricity Fraud In Tunisia')
@@ -56,7 +41,7 @@ st.markdown('The Tunisian Company of Electricity and Gas, STEG, experienced larg
 st.write('##### ⚠️This is not the official Tunisian Company of Electricity and Gas app‼️')
 # Load your data
 
-data = pd.read_csv('data/agg_train.csv')
+data = pd.read_csv('/home/jane/Documents/Fraud-Detection-in-Electricity-and-Gas-Consumption-in-tunisia/data/agg_train.csv')
 
 # Identify categorical features
 cat_features = ['district', 'client_catg', 'region']
@@ -70,12 +55,9 @@ numerical_features = ['transactions_count', 'consommation_level_1_mean', 'consom
 X = pd.concat([pd.DataFrame(encoded.toarray()), data[numerical_features]], axis=1)
 
 # Load the saved model using the load_model() function
-def load_model(path):
-    with open(path, 'rb') as f:
-        fraud_model = pkl.load(f)
-    return fraud_model
-    
-fraud_model = load_model('model.pkl')
+with open('/home/jane/Documents/Fraud-Detection-in-Electricity-and-Gas-Consumption-in-tunisia/model.pkl', 'rb') as f:
+    fraud_model = pkl.load(f)
+
 
 #Dummy function for the model prediction
 def predict(district, client_catg, region, transactions_count, consommation_level_1_mean, consommation_level_2_mean, consommation_level_3_mean, consommation_level_4_mean):
