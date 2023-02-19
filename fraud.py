@@ -56,13 +56,13 @@ data = pd.read_csv('/home/jane/Documents/electricity/Fraud-Detection-in-Electric
 # Identify categorical features
 cat_features = ['district', 'client_catg', 'region']
 
-# One-hot encode categorical features
-encoder = OneHotEncoder()
-encoded = encoder.fit_transform(data[cat_features])
+# One-hot encode categorical features using get_dummies
+encoded = pd.get_dummies(data[cat_features])
 
 # Combine encoded features with numerical features
 numerical_features = ['transactions_count', 'consommation_level_1_mean', 'consommation_level_2_mean', 'consommation_level_3_mean', 'consommation_level_4_mean']
-X = pd.concat([pd.DataFrame(encoded.toarray()), data[numerical_features]], axis=1)
+X = pd.concat([encoded, data[numerical_features]], axis=1)
+
 
 # Load the saved model using the load_model() function
 # @st.cache(allow_output_mutation=True)
@@ -83,11 +83,18 @@ consommation_level_2_mean = st.number_input('Consommation Level 2 Mean', value=0
 consommation_level_3_mean = st.number_input('Consommation Level 3 Mean', value=0.0, step=0.1)
 consommation_level_4_mean = st.number_input('Consommation Level 4 Mean', value=0.0, step=0.1)
 
-# Make a prediction using the machine learning model
+# Create input data as a DataFrame
 input_data = pd.DataFrame([[district, client_catg, region, transactions_count, consommation_level_1_mean, consommation_level_2_mean, consommation_level_3_mean, consommation_level_4_mean]], columns=['district', 'client_catg', 'region', 'transactions_count', 'consommation_level_1_mean', 'consommation_level_2_mean', 'consommation_level_3_mean', 'consommation_level_4_mean'])
-encoded_input = encoder.transform(input_data[cat_features])
-input_features = pd.concat([pd.DataFrame(encoded_input.toarray()), input_data[numerical_features]], axis=1)
+
+# One-hot encode categorical features using get_dummies
+encoded_input = pd.get_dummies(input_data, columns=cat_features)
+
+# Combine encoded features with numerical features
+input_features = pd.concat([encoded_input, input_data[numerical_features]], axis=1)
+
+# Make a prediction using the machine learning model
 prediction = fraud_model.predict(input_features)
+
 
 # button_style = 'background-color: green; color: white; font-weight: bold;'
 if st.button("Predict", key='predict_button', help='Click here to make a prediction',use_container_width=True):
