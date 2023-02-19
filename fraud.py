@@ -74,8 +74,8 @@ def load_model(path):
     with open(path, 'rb') as f:
         fraud_model = pkl.load(f)
     return fraud_model
-
-fraud_model = load_model('/home/jane/Documents/Fraud-Detection-in-Electricity-and-Gas-Consumption-in-tunisia/model.pkl')
+    
+fraud_model = load_model('model.pkl')
 
 #Dummy function for the model prediction
 def predict(district, client_catg, region, transactions_count, consommation_level_1_mean, consommation_level_2_mean, consommation_level_3_mean, consommation_level_4_mean):
