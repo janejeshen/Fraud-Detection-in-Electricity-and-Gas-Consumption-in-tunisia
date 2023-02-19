@@ -102,24 +102,24 @@ if st.button("Predict", key='predict_button', help='Click here to make a predict
 
 # st.markdown('<div class="contact-container">', unsafe_allow_html=True)
 
-# with st.container():
-#     st.write("### Contact Info")
-#     st.write("Email: janenjuguna550@gmail.com")
-#     st.write("Phone: +254114180510")
-#     st.write("Address: Nairobi,Kenya")
-#     st.write("Github: https://github.com/janejeshen")
+with st.container():
+    st.write("### Contact Info")
+    st.write("Email: janenjuguna550@gmail.com")
+    st.write("Phone: +254114180510")
+    st.write("Address: Nairobi,Kenya")
+    st.write("Github: https://github.com/janejeshen")
 
-#     st.markdown(
-#         """
-#         <style>
-#         .contact-container {
-#             background-color: #d1c1aa;
-#             padding: 20px;
-#         }
-#         </style>
-#         """,
-#         unsafe_allow_html=True,
-#     )
+    st.markdown(
+        """
+        <style>
+        .contact-container {
+            background-color: #d1c1aa;
+            padding: 20px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
     
-# # Close the div tag
-# st.markdown('</div>', unsafe_allow_html=True)
+# Close the div tag
+st.markdown('</div>', unsafe_allow_html=True)
