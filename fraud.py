@@ -15,32 +15,42 @@ def get_base64_of_bin_file(bin_file):
         data = f.read()
     return base64.b64encode(data).decode()
 
+import base64
+
 def set_png_as_page_bg(png_file):
     bin_str = get_base64_of_bin_file(png_file) 
     page_bg_img = '''
-   <style>
-    .stApp {
-    background-image: url("data:image/png;base64,%s");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: scroll; # doesn't work
-    }
+    <style>
+        .stApp {
+            background-image: url("data:image/png;base64,%s");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: scroll;
+        }
+        .stApp::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.6);
+            z-index: -1;
+        }
     </style>
     ''' % bin_str
-    
     st.markdown(page_bg_img, unsafe_allow_html=True)
-    return
+
+
 
 set_png_as_page_bg('soroush-zargar-Nu-QDChzGEw-unsplash.jpg')
 
 
 
-st.header('Detecting Electricity Fraud In Tunisia')
+st.sidebar.title("Navigation")
+app_mode = st.sidebar.selectbox("Select a section", ["About", "Predictions",'Help'])
 
-st.markdown('The Tunisian Company of Electricity and Gas, STEG, experienced large losses as a result of consumer fraud. My app analyzes usage patterns and flags suspect accounts using data modeling to find potential fraudsters in order to stop further losses.')
-st.write('##### ⚠️This is not the official Tunisian Company of Electricity and Gas app‼️')
 # Load your data
-
 data = pd.read_csv('data/agg_train.csv')
 
 # Identify categorical features
@@ -65,60 +75,69 @@ def predict(district, client_catg, region, transactions_count, consommation_leve
     # This is just a dummy function that returns the sum of the input features
     return transactions_count + consommation_level_1_mean + consommation_level_2_mean + consommation_level_3_mean + consommation_level_4_mean
 
-# User input for features
-district = st.selectbox('District', data['district'].unique())
-client_catg = st.selectbox('Client Category', data['client_catg'].unique())
-region = st.selectbox('Region', data['region'].unique())
-transactions_count = st.number_input('Transactions Count', value=1, step=1)
-consommation_level_1_mean = st.number_input('Consommation Level 1 Mean', value=0.0, step=0.1)
-consommation_level_2_mean = st.number_input('Consommation Level 2 Mean', value=0.0, step=0.1)
-consommation_level_3_mean = st.number_input('Consommation Level 3 Mean', value=0.0, step=0.1)
-consommation_level_4_mean = st.number_input('Consommation Level 4 Mean', value=0.0, step=0.1)
+if app_mode == "Predictions":
+    st.write('# Input section.')
+    st.write('#### Please fill out every section.')
+    col1, col2 = st.columns(2)
+    with col1:
+        district = st.selectbox('District', data['district'].unique())
+        client_catg = st.selectbox('Client Category', data['client_catg'].unique())
+        region = st.selectbox('Region', data['region'].unique())
+        transactions_count = st.number_input('Transactions Count', value=1, step=1)
 
-input_data = pd.DataFrame([[district, client_catg, region, transactions_count, consommation_level_1_mean, consommation_level_2_mean, consommation_level_3_mean, consommation_level_4_mean]], columns=['district', 'client_catg', 'region', 'transactions_count', 'consommation_level_1_mean', 'consommation_level_2_mean', 'consommation_level_3_mean', 'consommation_level_4_mean'])
-
-encoded_input = encoder.transform(input_data[cat_features])
-input_features = pd.concat([pd.DataFrame(encoded_input.toarray()), input_data[numerical_features]], axis=1)
-prediction = fraud_model.predict(input_features.values)
-
-
-
-# button_style = 'background-color: green; color: white; font-weight: bold;'
-if st.button("Predict", key='predict_button', help='Click here to make a prediction',use_container_width=True):
-    with st.spinner("Making prediction..."):
-        # Use the trained model to predict the outcome and display it to the user
-        if prediction[0] == 0:
-            st.write('*Prediction:* The customer is not engaging in fraudulent activities.')
-        else:
-            st.write('*Prediction:* The customer is engaging in fraudulent activities.')
-    st.success("Prediction completed!")
+    with col2:
+        consommation_level_1_mean = st.number_input('Consumption Level 1 Mean', value=0.0, step=0.1)
+        consommation_level_2_mean = st.number_input('Consumption Level 2 Mean', value=0.0, step=0.1)
+        consommation_level_3_mean = st.number_input('Consumption Level 3 Mean', value=0.0, step=0.1)
+        consommation_level_4_mean = st.number_input('Consumption Level 4 Mean', value=0.0, step=0.1)
 
 
 
+        input_data = pd.DataFrame([[district, client_catg, region, transactions_count, consommation_level_1_mean, consommation_level_2_mean, consommation_level_3_mean, consommation_level_4_mean]], columns=['district', 'client_catg', 'region', 'transactions_count', 'consommation_level_1_mean', 'consommation_level_2_mean', 'consommation_level_3_mean', 'consommation_level_4_mean'])
+
+        encoded_input = encoder.transform(input_data[cat_features])
+        input_features = pd.concat([pd.DataFrame(encoded_input.toarray()), input_data[numerical_features]], axis=1)
+        prediction = fraud_model.predict(input_features.values)
+        # st.sidebar.write("## Prediction Section")
+        st.sidebar.write('##### Click here to predict')
 
 
+        if st.sidebar.button("Predict", key='predict_button', help='Click here to make a prediction',  use_container_width=False):
+            with st.spinner("Predicting..."):
+                if prediction[0] == 0:
+                    st.sidebar.write('**Prediction:** The customer is not engaging in fraudulent activities.')
+                else:
+                    st.sidebar.write('**Prediction:** The customer is engaging in fraudulent activities!!.')
+                st.sidebar.success("Prediction completed!")
 
 
-st.markdown('<div class="contact-container">', unsafe_allow_html=True)
+elif app_mode == "About":
+    # st.header('Detecting Electricity Fraud In Tunisia')
+   
+    st.header('Project Overview')
+    st.write('##### ⚠️This is not the official Tunisian Company of Electricity and Gas app‼️')
+    st.markdown("The Tunisian Company of Electricity and Gas (STEG) is a vital public utility company responsible for supplying electricity and gas across Tunisia. However, the company faced a significant setback when it suffered massive financial losses amounting to 200 million Tunisian Dinars. Investigations later revealed that the primary cause of these losses was fraudulent manipulations of meters by some of the company's consumers. The fraudulent activities resulted in discrepancies in electricity and gas consumption measurements, leading to a significant revenue loss for STEG. This unfortunate incident highlights the importance of implementing effective fraud detection and prevention measures to safeguard the financial stability of public utility companies and prevent the exploitation of services by unscrupulous individuals.")
+    st.write('### Objective')
+    st.markdown('Using the client’s billing history, the aim of the challenge is to detect and recognize clients involved in fraudulent activities.')
 
-with st.container():
-    st.write("### Contact Info")
-    st.write("Email: janenjuguna550@gmail.com")
-    st.write("Phone: +254114180510")
-    st.write("Address: Nairobi,Kenya")
-    st.write("Github: https://github.com/janejeshen")
-
-    st.markdown(
-        """
-        <style>
-        .contact-container {
-            background-color: #d1c1aa;
-            padding: 20px;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-    
-# Close the div tag
-st.markdown('</div>', unsafe_allow_html=True)
+elif app_mode == "Help":
+     st.sidebar.header("Contact Information")
+     st.sidebar.write("#### Email: janenjuguna550@gmail.com")
+     st.sidebar.write("#### Phone: +254114180510")
+     st.sidebar.write("#### Address: Nairobi,Kenya")
+     st.sidebar.write('#### Github: https://github.com/janejeshen')
+     st.markdown('## Help')
+     st.markdown("This app is intended to detect fraudulent activities by Tunisian Company of Electricity and Gas customers (STEG). Here's a quick explanation of the input to help you use this app:")
+     st.write('###### To use this app, simply follow these steps:')
+     st.markdown("- Fill in the input form with the client's information\n"
+                 "- Click the **Predict** button to make a prediction\n"
+                "- The app will display a message indicating if the client is engaging in fraudulent activities")
+     st.write('The following is the meaning of the inputs:')
+     st.markdown("- **Region:** The area where the client is located\n"
+            "- **District:** The district where the client is located\n"
+            "- **Client_catg:** The category of the client\n"
+            "- **Consommation_level_1:** The first level of the client's electricity and gas consumption\n"
+            "- **Consommation_level_2:** The second level of the client's electricity and gas consumption\n"
+            "- **Consommation_level_3:** The third level of the client's electricity and gas consumption\n"
+            "- **Consommation_level_4:** The fourth level of the client's electricity and gas consumption")
+     st.markdown("\nIf you encounter any issues or have any questions, please feel free to reach out to us using the contact information provided in the sidebar.")
