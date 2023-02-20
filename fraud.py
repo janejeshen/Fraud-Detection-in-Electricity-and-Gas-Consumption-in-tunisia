@@ -136,7 +136,7 @@ elif app_mode == "Help":
      st.markdown("- **Region:** The area where the client is located\n"
             "- **District:** The district where the client is located\n"
             "- **Client_catg:** The category of the client\n"
-            "- **Transactions Count: total number of client transactions** "
+            "- **Transactions Count: total number of client transactions**\n"
             "- **Consommation_level_1:** The first level of the client's electricity and gas consumption\n"
             "- **Consommation_level_2:** The second level of the client's electricity and gas consumption\n"
             "- **Consommation_level_3:** The third level of the client's electricity and gas consumption\n"
