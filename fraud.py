@@ -10,6 +10,20 @@ warnings.filterwarnings(action='ignore', category=DataConversionWarning)
 
 st.set_page_config(page_title='Tunisia Electricity Fraud Detection', page_icon='🕵️', layout="wide", initial_sidebar_state="auto")
 
+# Define CSS style to change text color to black
+black_text = """
+<style>
+body {
+    color: black;
+}
+</style>
+"""
+
+# Apply the style to your Streamlit app
+st.markdown(black_text, unsafe_allow_html=True)
+
+
+
 def get_base64_of_bin_file(bin_file):
     with open(bin_file, 'rb') as f:
         data = f.read()
@@ -43,12 +57,12 @@ def set_png_as_page_bg(png_file):
 
 
 
-set_png_as_page_bg('soroush-zargar-Nu-QDChzGEw-unsplash.jpg')
+set_png_as_page_bg('dwiinshito--lDNCLbQi9g-unsplash (1).jpg')
 
 
 
 st.sidebar.title("Navigation")
-app_mode = st.sidebar.selectbox("Select a section", ["About", "Predictions",'Help'])
+app_mode = st.sidebar.radio("Select a section", ["About", "Predictions",'Help'])
 
 # Load your data
 data = pd.read_csv('data/agg_train.csv')
@@ -121,11 +135,6 @@ elif app_mode == "About":
     st.markdown('Using the client’s billing history, the aim of the challenge is to detect and recognize clients involved in fraudulent activities.')
 
 elif app_mode == "Help":
-     st.sidebar.header("Contact Information")
-     st.sidebar.write("#### Email: janenjuguna550@gmail.com")
-     st.sidebar.write("#### Phone: +254114180510")
-     st.sidebar.write("#### Address: Nairobi,Kenya")
-     st.sidebar.write('#### Github: https://github.com/janejeshen')
      st.markdown('## Help')
      st.markdown("This app is intended to detect fraudulent activities by Tunisian Company of Electricity and Gas customers (STEG). Here's a quick explanation of the input to help you use this app:")
      st.write('###### To use this app, simply follow these steps:')
@@ -137,8 +146,14 @@ elif app_mode == "Help":
             "- **District:** The district where the client is located\n"
             "- **Client_catg:** The category of the client\n"
             "- **Transactions Count**: total number of client transactions\n"
-            "- **Consommation_level_1:** The first level of the client's electricity and gas consumption\n"
-            "- **Consommation_level_2:** The second level of the client's electricity and gas consumption\n"
-            "- **Consommation_level_3:** The third level of the client's electricity and gas consumption\n"
-            "- **Consommation_level_4:** The fourth level of the client's electricity and gas consumption")
-     st.markdown("\nIf you encounter any issues or have any questions, please feel free to reach out to us using the contact information provided in the sidebar.")
+            "- **Consumption level 1:** The lowest level of electricity and gas consumption for the client, typically including basic household appliances such as lights and small electronics.\n"
+            "- **Consumption level 2:** The second tier of consumption, including larger household appliances such as refrigerators and washing machines.\n"
+            "- **Consumption level 3:** The third tier of consumption, including more energy-intensive appliances such as water heaters and electric cookers.\n"
+            "- **Consumption level 4:** The highest level of consumption, including very energy-intensive appliances such as swimming pool pumps or large industrial machinery.")
+     st.markdown("\nIf you encounter any issues or have any questions, please feel free to reach out to us using the contact information provided.")
+     with st.container():
+        st.write("### Contact Information")
+        st.write("##### Email: janenjuguna550@gmail.com")
+        st.write("##### Phone: +254114180510")
+        st.write("##### Address: Nairobi, Kenya")
+        st.write('##### Github: https://github.com/janejeshen')
